@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  student_id   Int     @id @default(autoincrement())
+  name         String
+  email        String  @unique
+
+  progress StudentProgress[]
+}
+
+model StudentProgress {
+  progress_id                   Int      @id @default(autoincrement())
+  student_id                    Int
+  course_name                   String
+  learning_path_id              Int
+  active_tutorials              Int      @default(0)
+  completed_tutorials           Int      @default(0)
+  is_graduated                  Boolean  @default(false)
+  already_generated_certificate Boolean  @default(false)
+  final_submission_id           Int?
+  submission_rating             Int?
+  final_exam_id                 Int?
+  exam_score                    Int?
+  started_learning_at           DateTime
+
+  student       Student      @relation(fields: [student_id], references: [student_id], onDelete: Cascade)
+  course        Course       @relation(fields: [course_name], references: [course_name], onDelete: Cascade)
+  learning_path LearningPath @relation(fields: [learning_path_id], references: [learning_path_id], onDelete: Cascade)
+}
+
+
+model LearningPath {
+  learning_path_id   Int     @id @default(autoincrement())
+  learning_path_name String
+
+  courses  Course[]
+  progress StudentProgress[]
+}
+
+model Course {
+  course_id        Int     @id @default(autoincrement())
+  learning_path_id Int
+  course_name      String  @unique
+  course_level_str Int
+  hours_to_study   Int
+
+  learning_path LearningPath @relation(fields: [learning_path_id], references: [learning_path_id], onDelete: Cascade)
+  course_level  CourseLevel  @relation(fields: [course_level_str], references: [id])
+  tutorials     Tutorial[]
+  progress      StudentProgress[]
+}
+
+
+model CourseLevel {
+  id           Int     @id @default(autoincrement())
+  course_level String
+
+  courses Course[]
+}
+
+
+model Tutorial {
+  tutorial_id   Int    @id @default(autoincrement())
+  course_id     Int
+  tutorial_title String
+
+  course Course @relation(fields: [course_id], references: [course_id], onDelete: Cascade)
+}

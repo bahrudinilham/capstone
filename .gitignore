@@ -1,0 +1,45 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules
+client/node_modules
+server/node_modules
+
+# Build output
+dist
+dist-ssr
+client/dist
+client/dist-ssr
+server/dist
+
+# Runtime data / caches
+*.pid
+*.pid.lock
+.cache
+.npm
+.pnpm-store
+coverage
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.*
+server/.env
+client/.env
+!.env.example
+!server/.env.example
+!client/.env.example
+
+# Editor / system files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.swp
+*.swo
