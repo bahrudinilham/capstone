@@ -232,8 +232,6 @@ export async function getKpis(studentId) {
   };
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////
-
 function pickRandomPath(paths) {
   if (!paths.length) {
     return null;
