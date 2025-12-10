@@ -71,7 +71,7 @@ async function getTutorialCountMap(courseIds) {
 }
 
 function estimateProgressMinutes(entry, tutorialCounts) {
-  const courseId = entry.course?.course_id;
+  const courseId = entry.Course?.course_id;
   const totalTutorials =
     (courseId ? tutorialCounts.get(courseId) : undefined) ??
     entry.completed_tutorials + entry.active_tutorials;
@@ -79,8 +79,8 @@ function estimateProgressMinutes(entry, tutorialCounts) {
     return 0;
   }
 
-  const estimatedCourseMinutes = entry.course?.hours_to_study
-    ? entry.course.hours_to_study * 60
+  const estimatedCourseMinutes = entry.Course?.hours_to_study
+    ? entry.Course.hours_to_study * 60
     : totalTutorials * DEFAULT_TUTORIAL_MINUTES;
   const courseProgress = computeCourseProgress(entry);
   const ratio = Math.min(1, courseProgress.percent / 100);
@@ -98,7 +98,7 @@ async function fetchProgressEntries(studentId, dateFilter = {}) {
       active_tutorials: true,
       is_graduated: true,
       started_learning_at: true,
-      course: {
+      Course: {
         select: {
           course_id: true,
           course_name: true,
@@ -130,7 +130,7 @@ export async function getWeeklyActivity(studentId) {
   const courseIds = [
     ...new Set(
       [...currentProgress, ...previousProgress]
-        .map((entry) => entry.course?.course_id)
+        .map((entry) => entry.Course?.course_id)
         .filter((id) => typeof id === "number")
     ),
   ];
@@ -192,7 +192,7 @@ export async function getKpis(studentId) {
   const courseIds = [
     ...new Set(
       progressEntries
-        .map((entry) => entry.course?.course_id)
+        .map((entry) => entry.Course?.course_id)
         .filter((id) => typeof id === "number")
     ),
   ];
@@ -201,7 +201,7 @@ export async function getKpis(studentId) {
   const inProgressCourses = new Set();
   const courseMinutesMap = new Map();
   progressEntries.forEach((entry) => {
-    const courseId = entry.course?.course_id;
+    const courseId = entry.Course?.course_id;
     if (typeof courseId !== "number") return;
 
     const courseProgress = computeCourseProgress(entry);
@@ -295,7 +295,7 @@ export async function getProgressMap(studentId) {
       completed_tutorials: true,
       active_tutorials: true,
       is_graduated: true,
-      course: {
+      Course: {
         select: { course_id: true, course_name: true, learning_path_id: true },
       },
     },
@@ -303,15 +303,15 @@ export async function getProgressMap(studentId) {
 
   const map = new Map();
   entries.forEach((entry) => {
-    const courseName = entry.course?.course_name || "Unknown Course";
+    const courseName = entry.Course?.course_name || "Unknown Course";
     const payload = {
       completed_tutorials: entry.completed_tutorials,
       active_tutorials: entry.active_tutorials,
       is_graduated: entry.is_graduated,
       course_name: courseName,
-      learning_path_id: entry.course?.learning_path_id || null,
+      learning_path_id: entry.Course?.learning_path_id || null,
     };
-    const courseId = entry.course?.course_id;
+    const courseId = entry.Course?.course_id;
     if (typeof courseId === "number") {
       map.set(courseId, payload);
     }
@@ -439,7 +439,7 @@ export async function getStandaloneCourses(studentId) {
       learning_path_id: nonLearningPathId,
     },
     include: {
-      course: {
+      Course: {
         select: {
           course_id: true,
           course_name: true,
@@ -449,12 +449,12 @@ export async function getStandaloneCourses(studentId) {
   });
 
   return entries
-    .filter((entry) => entry.course)
+    .filter((entry) => entry.Course)
     .map((entry) => {
       const courseProgress = computeCourseProgress(entry);
       return {
-        id: entry.course.course_id,
-        title: entry.course.course_name,
+        id: entry.Course.course_id,
+        title: entry.Course.course_name,
         percent: courseProgress.percent,
       };
     });
