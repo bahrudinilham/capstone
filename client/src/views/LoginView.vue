@@ -32,9 +32,6 @@ async function handleSubmit() {
         <h1 class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">
           Masuk ke dashboard
         </h1>
-        <p class="text-sm text-slate-500">
-          Gunakan akun demo untuk melihat progres.
-        </p>
       </div>
 
       <div class="space-y-4">
