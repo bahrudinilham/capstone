@@ -11,9 +11,7 @@ async function handleSubmit() {
   try {
     await auth.login(form);
     router.push({ name: "dashboard" });
-  } catch (error) {
-    // handled in store
-  }
+  } catch (error) {}
 }
 </script>
 
