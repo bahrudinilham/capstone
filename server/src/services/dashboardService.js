@@ -246,7 +246,7 @@ export async function getRecommendedPath(studentId) {
     where: { student_id: studentId },
     orderBy: { started_learning_at: "desc" },
     include: {
-      learning_path: true,
+      LearningPath: true,
     },
   });
 
@@ -271,7 +271,7 @@ export async function getRecommendedPath(studentId) {
     },
     orderBy: { learning_path_id: "asc" },
     include: {
-      courses: true,
+      Course: true,
     },
     take: 5,
   });
@@ -284,7 +284,7 @@ export async function getRecommendedPath(studentId) {
   return {
     id: recommendation.learning_path_id,
     title: recommendation.learning_path_name,
-    totalCourses: recommendation.courses.length,
+    totalCourses: recommendation.Course.length,
   };
 }
 
@@ -330,7 +330,7 @@ export async function getPathsOverview(studentId) {
     prisma.learningPath.findMany({
       where: learningPathWhere,
       include: {
-        courses: {
+        Course: {
           orderBy: { course_id: "asc" },
         },
       },
@@ -339,13 +339,13 @@ export async function getPathsOverview(studentId) {
   ]);
 
   const enrichedPaths = paths.map((path) => {
-    const totalCourses = path.courses.length;
+    const totalCourses = path.Course.length;
     let completedCourses = 0;
     let startedCourses = 0;
     let percentSum = 0;
     let hasProgress = false;
 
-    path.courses.forEach((course) => {
+    path.Course.forEach((course) => {
       const progress = progressMap.get(course.course_id);
       if (!progress) return;
 
@@ -394,7 +394,7 @@ export async function getPathDetail(studentId, pathId) {
   const path = await prisma.learningPath.findUnique({
     where: { learning_path_id: Number(pathId) },
     include: {
-      courses: {
+      Course: {
         orderBy: { course_id: "asc" },
       },
     },
@@ -407,7 +407,7 @@ export async function getPathDetail(studentId, pathId) {
   const progressMap = await getProgressMap(studentId);
   const lessons = [];
 
-  path.courses.forEach((course) => {
+  path.Course.forEach((course) => {
     const progress = progressMap.get(course.course_id);
     const courseProgress = computeCourseProgress(progress);
 
